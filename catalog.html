@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare – Каталог услуг</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Дополнительные стили для каталога, чтобы не конфликтовать с основными */
+        .catalog-header {
+            background: #F3FCF9;
+            padding: 20px 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-link {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            color: #4b97ef;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #4b97ef;
+            border-radius: 5px;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            background: #4b97ef;
+            color: #fff;
+        }
+        .catalog-controls {
+            padding: 20px 80px;
+            background: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .search-box {
+            flex: 2;
+            min-width: 200px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+        .sort-box, .category-box {
+            min-width: 150px;
+        }
+        select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            background: #fff;
+        }
+        .method-buttons {
+            padding: 10px 80px;
+            background: #F3FCF9;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .method-btn {
+            background: #fff;
+            border: 1px solid #4b97ef;
+            color: #4b97ef;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .method-btn:hover {
+            background: #4b97ef;
+            color: #fff;
+        }
+        .catalog-container {
+            padding: 40px 80px;
+            background: #F3FCF9;
+            min-height: 60vh;
+        }
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .catalog-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .catalog-card:hover {
+            transform: translateY(-5px);
+        }
+        .catalog-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .card-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1F2A4A;
+        }
+        .card-category {
+            font-size: 12px;
+            color: #40A3F8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .card-desc {
+            font-size: 14px;
+            color: #5A6A7F;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .card-price {
+            font-weight: 700;
+            color: #4b97ef;
+            margin-bottom: 8px;
+        }
+        .card-rating {
+            font-size: 13px;
+            color: #FFB800;
+        }
+        .not-found {
+            text-align: center;
+            font-size: 18px;
+            color: #757575;
+            padding: 50px;
+        }
+        @media (max-width: 768px) {
+            .catalog-header, .catalog-controls, .method-buttons, .catalog-container {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            .catalog-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="catalog-header">
+            <a href="#" class="logo">HEALTCARE.</a>
+            <a href="index.html" class="back-link">← На главную</a>
+        </div>
+
+        <div class="catalog-controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Поиск по названию или описанию...">
+            </div>
+            <div class="sort-box">
+                <select id="sortSelect">
+                    <option value="default">Сортировка: по умолчанию</option>
+                    <option value="name-asc">По названию (А-Я)</option>
+                    <option value="name-desc">По названию (Я-А)</option>
+                    <option value="price-asc">По цене (сначала дешёвые)</option>
+                    <option value="price-desc">По цене (сначала дорогие)</option>
+                    <option value="rating-asc">По рейтингу (возрастанию)</option>
+                    <option value="rating-desc">По рейтингу (убыванию)</option>
+                </select>
+            </div>
+            <div class="category-box">
+                <select id="categorySelect">
+                    <option value="all">Все категории</option>
+                    <option value="Consultation">Консультации</option>
+                    <option value="Diagnostics">Диагностика</option>
+                    <option value="Treatment">Лечение</option>
+                    <option value="Prevention">Профилактика</option>
+                    <option value="Surgery">Хирургия</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="method-buttons">
+            <button class="method-btn" data-method="map">map (показать названия)</button>
+            <button class="method-btn" data-method="filter">filter (только консультации)</button>
+            <button class="method-btn" data-method="reduce">reduce (общая цена всех услуг)</button>
+            <button class="method-btn" data-method="sort">sort (по цене, убывание)</button>
+            <button class="method-btn" data-method="forEach">forEach (вывести id в консоль)</button>
+            <button class="method-btn" data-method="find">find (найти услугу с id=5)</button>
+            <button class="method-btn" data-method="some">some (есть ли услуги дороже 5000?)</button>
+            <button class="method-btn" data-method="every">every (все ли услуги имеют рейтинг > 3?)</button>
+            <button class="method-btn" data-method="includes">includes (проверить категорию "Лечение")</button>
+            <button class="method-btn" data-method="slice">slice (первые 5 услуг)</button>
+        </div>
+
+        <div class="catalog-container">
+            <div id="catalogGrid" class="catalog-grid"></div>
+        </div>
+    </div>
+
+    <script>
+    // МАССИВ ОБЪЕКТОВ (15 услуг) – с локальными изображениями
+const services = [
+    { id: 1, name: "Кардиологическая консультация", description: "Приём кардиолога, ЭКГ, рекомендации.", price: 2500, category: "Consultation", rating: 4.8, image: "images/cardiology.jpg" },
+    { id: 2, name: "УЗИ сердца", description: "Эхокардиография с расшифровкой.", price: 3500, category: "Diagnostics", rating: 4.9, image: "images/ultrasound.jpg" },
+    { id: 3, name: "Лечение гипертонии", description: "Курс терапии под наблюдением врача.", price: 12000, category: "Treatment", rating: 4.7, image: "images/hypertension.jpg" },
+    { id: 4, name: "Профилактический осмотр", description: "Check-up организма, анализы.", price: 5000, category: "Prevention", rating: 4.5, image: "images/checkup.jpg" },
+    { id: 5, name: "Стоматологическая консультация", description: "Осмотр, план лечения.", price: 1500, category: "Consultation", rating: 4.6, image: "images/dentist.jpg" },
+    { id: 6, name: "МРТ головного мозга", description: "Современный томограф, заключение.", price: 6000, category: "Diagnostics", rating: 4.9, image: "images/mri.jpg" },
+    { id: 7, name: "Лазерная коррекция зрения", description: "Безболезненная процедура.", price: 25000, category: "Surgery", rating: 4.9, image: "images/laser.jpg" },
+    { id: 8, name: "Вакцинация", description: "Прививки для взрослых и детей.", price: 1200, category: "Prevention", rating: 4.8, image: "images/vaccination.jpg" },
+    { id: 9, name: "Гастроэнтерология", description: "Приём специалиста, ФГДС.", price: 3000, category: "Consultation", rating: 4.7, image: "images/gastro.jpg" },
+    { id: 10, name: "Анализы крови", description: "Общий, биохимический, гормоны.", price: 800, category: "Diagnostics", rating: 4.5, image: "images/bloodtest.jpg" },
+    { id: 11, name: "Физиотерапия", description: "Курс лечения магнитным полем.", price: 2000, category: "Treatment", rating: 4.6, image: "images/physio.jpg" },
+    { id: 12, name: "Эндокринология", description: "Консультация, УЗИ щитовидной железы.", price: 2800, category: "Consultation", rating: 4.8, image: "images/endocrinology.jpg" },
+    { id: 13, name: "Онкологический скрининг", description: "Раннее выявление онкологии.", price: 7000, category: "Diagnostics", rating: 4.9, image: "images/screening.jpg" },
+    { id: 14, name: "Реабилитация после инфаркта", description: "Комплексная программа восстановления.", price: 18000, category: "Treatment", rating: 4.8, image: "images/rehab.jpg" },
+    { id: 15, name: "Пластическая хирургия", description: "Консультация, подбор операции.", price: 30000, category: "Surgery", rating: 5.0, image: "images/plastic.jpg" }
+];
+
+        // Текущий массив для отображения (меняется при фильтрах/сортировке)
+        let currentServices = [...services];
+        let currentMethodResult = null; // для хранения результата метода (если не массив)
+
+        // Функция отрисовки карточек
+        function renderCatalog(items) {
+            const container = document.getElementById('catalogGrid');
+            if (!items || items.length === 0) {
+                container.innerHTML = '<div class="not-found">❌ По вашему запросу ничего не найдено. Измените критерии поиска.</div>';
+                return;
+            }
+            container.innerHTML = items.map(item => `
+                <div class="catalog-card">
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="card-body">
+                        <div class="card-title">${item.name}</div>
+                        <div class="card-category">${item.category}</div>
+                        <div class="card-desc">${item.description.substring(0, 80)}${item.description.length > 80 ? '…' : ''}</div>
+                        <div class="card-price">${item.price.toLocaleString()} ₽</div>
+                        <div class="card-rating">★ ${item.rating}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Обновление каталога с учётом поиска, сортировки, категории
+        function updateCatalog() {
+            let filtered = [...services];
+            
+            // Поиск
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(item => 
+                    item.name.toLowerCase().includes(searchTerm) || 
+                    item.description.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Фильтр по категории
+            const category = document.getElementById('categorySelect').value;
+            if (category !== 'all') {
+                filtered = filtered.filter(item => item.category === category);
+            }
+            
+            // Сортировка
+            const sortBy = document.getElementById('sortSelect').value;
+            if (sortBy === 'name-asc') {
+                filtered.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (sortBy === 'name-desc') {
+                filtered.sort((a, b) => b.name.localeCompare(a.name));
+            } else if (sortBy === 'price-asc') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (sortBy === 'price-desc') {
+                filtered.sort((a, b) => b.price - a.price);
+            } else if (sortBy === 'rating-asc') {
+                filtered.sort((a, b) => a.rating - b.rating);
+            } else if (sortBy === 'rating-desc') {
+                filtered.sort((a, b) => b.rating - a.rating);
+            }
+            
+            currentServices = filtered;
+            renderCatalog(currentServices);
+        }
+
+        // Обработчики методов массивов (10 штук)
+        function applyMethod(method) {
+            let result;
+            let message = '';
+            switch(method) {
+                case 'map':
+                    const names = services.map(s => s.name);
+                    message = `Названия услуг: ${names.join(', ')}`;
+                    alert(message);
+                    // не меняется отображение каталога
+                    break;
+                case 'filter':
+                    const consultations = services.filter(s => s.category === 'Consultation');
+                    currentServices = consultations;
+                    renderCatalog(currentServices);
+                    break;
+                case 'reduce':
+                    const total = services.reduce((sum, s) => sum + s.price, 0);
+                    alert(`Общая стоимость всех услуг: ${total.toLocaleString()} ₽`);
+                    break;
+                case 'sort':
+                    const sorted = [...services].sort((a,b) => b.price - a.price);
+                    currentServices = sorted;
+                    renderCatalog(currentServices);
+                    break;
+                case 'forEach':
+                    services.forEach(s => console.log(`ID: ${s.id}, Название: ${s.name}`));
+                    alert('Смотрите консоль браузера (F12)');
+                    break;
+                case 'find':
+                    const found = services.find(s => s.id === 5);
+                    alert(found ? `Найдена услуга: ${found.name}` : 'Не найдено');
+                    break;
+                case 'some':
+                    const hasExpensive = services.some(s => s.price > 5000);
+                    alert(`Есть услуги дороже 5000₽? ${hasExpensive ? 'Да' : 'Нет'}`);
+                    break;
+                case 'every':
+                    const allHighRating = services.every(s => s.rating > 3);
+                    alert(`Все услуги имеют рейтинг выше 3? ${allHighRating ? 'Да' : 'Нет'}`);
+                    break;
+                case 'includes':
+                    const categories = services.map(s => s.category);
+                    const hasTreatment = categories.includes('Treatment');
+                    alert(`В списке есть категория "Лечение"? ${hasTreatment ? 'Да' : 'Нет'}`);
+                    break;
+                case 'slice':
+                    const firstFive = services.slice(0,5);
+                    currentServices = firstFive;
+                    renderCatalog(currentServices);
+                    break;
+                default:
+                    updateCatalog();
+            }
+            // после некоторых методов (filter, sort, slice) каталог обновлён, для остальных сбрасываем принудительно
+            if (!['filter', 'sort', 'slice'].includes(method)) {
+                // сбрасываем фильтры, чтобы не было путаницы
+                document.getElementById('searchInput').value = '';
+                document.getElementById('categorySelect').value = 'all';
+                document.getElementById('sortSelect').value = 'default';
+                updateCatalog();
+            }
+        }
+
+        // События
+        document.getElementById('searchInput').addEventListener('input', updateCatalog);
+        document.getElementById('sortSelect').addEventListener('change', updateCatalog);
+        document.getElementById('categorySelect').addEventListener('change', updateCatalog);
+        
+        document.querySelectorAll('.method-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const method = btn.getAttribute('data-method');
+                applyMethod(method);
+            });
+        });
+        
+        // Начальная отрисовка
+        updateCatalog();
+    </script>
+</body>
+</html>
