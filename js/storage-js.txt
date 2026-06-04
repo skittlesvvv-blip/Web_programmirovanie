@@ -1,0 +1,102 @@
+/* 
+ * storage.js — ЧИСТАЯ ВЕРСИЯ (только localStorage)
+ * Убраны все запросы к JSON Server — ошибки в консоли исчезнут
+ */
+
+const Storage = {
+    // ===== БАЗОВЫЕ МЕТОДЫ LOCALSTORAGE =====
+    get(key) {
+        try {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : null;
+        } catch (e) {
+            console.error(`[Storage.get] ${I18n?.t('storage_error_read') || 'Ошибка чтения'} "${key}":`, e);
+            return null;
+        }
+    },
+
+    set(key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+            return true;
+        } catch (e) {
+            console.error(`[Storage.set] ${I18n?.t('storage_error_write') || 'Ошибка записи'} "${key}":`, e);
+            return false;
+        }
+    },
+
+    remove(key) {
+        try {
+            localStorage.removeItem(key);
+            return true;
+        } catch (e) {
+            console.error(`[Storage.remove] ${I18n?.t('storage_error_remove') || 'Ошибка удаления'} "${key}":`, e);
+            return false;
+        }
+    },
+
+    clearAll() {
+        try {
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('scala_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            console.log('%c[Storage] ' + (I18n?.t('storage_cleared') || 'Все данные очищены'), 'color:#c9a66b');
+            return true;
+        } catch (e) {
+            console.error('[Storage.clearAll] ' + (I18n?.t('storage_error') || 'Ошибка:'), e);
+            return false;
+        }
+    },
+
+    // ===== РАБОТА С ТЕКУЩИМ ПОЛЬЗОВАТЕЛЕМ =====
+    getCurrentUser() {
+        return this.get(this.keys.CURRENT_USER);
+    },
+
+    setCurrentUser(user) {
+        return this.set(this.keys.CURRENT_USER, user);
+    },
+
+    isAuthenticated() {
+        return !!this.getCurrentUser();
+    },
+
+    // ===== КОРЗИНА =====
+    getCart() {
+        const userId = this.getCurrentUser()?.id;
+        if (!userId) return [];
+        const carts = this.get(this.keys.CART) || {};
+        return carts[userId] || [];
+    },
+
+    saveCart(items) {
+        const userId = this.getCurrentUser()?.id;
+        if (!userId) return false;
+        let carts = this.get(this.keys.CART) || {};
+        carts[userId] = items;
+        return this.set(this.keys.CART, carts);
+    },
+
+    // ===== КЛЮЧИ =====
+    keys: {
+        USERS: 'scala_users',
+        CURRENT_USER: 'scala_current_user',
+        PRODUCTS: 'scala_products',
+        CART: 'scala_cart',
+        ORDERS: 'scala_orders',
+        FAVORITES: 'scala_favorites',
+        SETTINGS: 'scala_settings',
+        LANG: 'scala_lang',
+        THEME: 'scala_theme',
+        A11Y: 'scala_a11y'
+    }
+};
+
+// ===== ЭКСПОРТ =====
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = Storage;
+}
+
+console.log('%c[Storage] ✅ ' + (I18n?.t('storage_ready') || 'Работает в режиме localStorage (JSON Server отключён)'), 'color:#c9a66b; font-weight:bold');

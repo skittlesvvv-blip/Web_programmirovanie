@@ -1,0 +1,145 @@
+/* 
+ * favorites.js — Избранное с переходом на карточку товара
+ */
+
+const Favorites = {
+    KEYS: { FAVORITES: 'scala_favorites' },
+
+    _getCurrentUser() {
+        return Auth?.getCurrentUser?.() || Storage.get(Storage.keys.CURRENT_USER);
+    },
+
+    _getUserId() {
+        return this._getCurrentUser()?.id || null;
+    },
+
+    // Маппинг: productId → URL страницы товара
+    productUrls: {
+        'black-1': 'product-black.html',
+        'blue-dark': 'product-blue-dark.html',
+        'blue-orange': 'product-blue-orange.html',
+        'greta-medium': 'product-greta-medium.html',
+        'monica-big': 'product-monica-big.html',
+        'monica-small': 'product-monica-small.html',
+        'snake-1': 'product-snake-1.html',
+        'snake-2': 'product-snake-2.html',
+        'snake-3': 'product-snake-3.html',
+        'leopard-1': 'product-leopard.html'
+        // Добавляй новые товары сюда по мере необходимости
+    },
+
+    async getItems() {
+        const userId = this._getUserId();
+        if (!userId) return [];
+        const all = Storage.get(this.KEYS.FAVORITES) || {};
+        return all[userId] || [];
+    },
+
+    async _saveItems(items) {
+        const userId = this._getUserId();
+        if (!userId) return false;
+        let all = Storage.get(this.KEYS.FAVORITES) || {};
+        all[userId] = items;
+        Storage.set(this.KEYS.FAVORITES, all);
+        return true;
+    },
+
+    async toggle(productId, productName, productPrice, productImage) {
+        const user = this._getCurrentUser();
+        if (!user) {
+            showNotification?.(I18n.t('product_login_required'), 'error');
+            return { success: false };
+        }
+
+        let items = await this.getItems();
+        const index = items.findIndex(i => i.productId === productId);
+
+        if (index >= 0) {
+            items.splice(index, 1);
+            showNotification?.(I18n.t('notify_unfavorited'), 'success');
+        } else {
+            items.push({ 
+                productId, 
+                productName, 
+                price: productPrice, 
+                image: productImage 
+            });
+            showNotification?.(I18n.t('notify_favorited'), 'success');
+        }
+
+        await this._saveItems(items);
+        this.updateCount();
+        this.render();
+        return { success: true };
+    },
+
+    async removeItem(productId) {
+        let items = await this.getItems();
+        items = items.filter(i => i.productId !== productId);
+        await this._saveItems(items);
+        this.updateCount();
+        this.render();
+    },
+
+    async getCount() {
+        const items = await this.getItems();
+        return items.length;
+    },
+
+    async updateCount() {
+        const count = await this.getCount();
+        const badge = document.querySelector('.header-icon i.far.fa-heart')?.parentElement?.querySelector('.badge');
+        if (badge) badge.textContent = count;
+    },
+
+    async render() {
+        const container = document.getElementById('favoritesItems');
+        const emptyEl = document.getElementById('favoritesEmpty');
+        const fullEl = document.getElementById('favoritesFull');
+
+        if (!container) return;
+
+        const items = await this.getItems();
+
+        if (items.length === 0) {
+            emptyEl.style.display = 'block';
+            fullEl.style.display = 'none';
+            return;
+        }
+
+        emptyEl.style.display = 'none';
+        fullEl.style.display = 'block';
+
+        let html = '';
+        items.forEach(item => {
+            const url = this.productUrls[item.productId] || '#';
+            html += `
+                <a href="${url}" class="favorite-item">
+                    <div class="favorite-item__image">
+                        <img src="${item.image}" alt="${item.productName}">
+                    </div>
+                    <div class="favorite-item__info">
+                        <h3>${item.productName}</h3>
+                        <p>${item.price} BYN</p>
+                    </div>
+                    <button class="favorite-item__remove" onclick="event.preventDefault(); Favorites.removeItem('${item.productId}');">✕</button>
+                </a>
+            `;
+        });
+
+        container.innerHTML = html;
+    },
+
+    init() {
+        this.updateCount();
+        if (document.getElementById('favoritesItems')) this.render();
+    }
+};
+
+// Глобальная функция
+window.toggleFavorite = function(productId, name, price, image) {
+    Favorites.toggle(productId, name, price, image);
+};
+
+document.addEventListener('DOMContentLoaded', () => Favorites.init());
+if (typeof module !== 'undefined') module.exports = Favorites;

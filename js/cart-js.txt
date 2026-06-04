@@ -1,0 +1,209 @@
+/* 
+ * cart.js — Полностью рабочая версия + переход на страницу товара
+ * Исправлено: правильное определение пользователя по email/username
+ */
+
+const Cart = {
+    KEYS: {
+        CART: 'scala_cart',
+        DISCOUNT_KEY: 'scala_active_discount'
+    },
+
+    _getCurrentUser() {
+        return Auth?.getCurrentUser?.() || Storage.get(Storage.keys.CURRENT_USER);
+    },
+
+    // === ИСПРАВЛЕННЫЙ МЕТОД ===
+    _getUserKey() {
+        const user = this._getCurrentUser();
+        if (!user) return null;
+        // Используем email как основной ключ, fallback на username/id
+        return user.email || user.username || user.id || String(user);
+    },
+
+    async getItems() {
+        const userKey = this._getUserKey();
+        if (!userKey) return [];
+        
+        const allCarts = Storage.get(this.KEYS.CART) || {};
+        return allCarts[userKey] || [];
+    },
+
+    async _saveItems(items) {
+        const userKey = this._getUserKey();
+        if (!userKey) return false;
+
+        let allCarts = Storage.get(this.KEYS.CART) || {};
+        allCarts[userKey] = items;
+        Storage.set(this.KEYS.CART, allCarts);
+        return true;
+    },
+
+    async addItem(productId, productName, productPrice, productImage, quantity = 1) {
+        const user = this._getCurrentUser();
+        if (!user) {
+            showNotification?.(I18n.t('product_login_required'), 'error');
+            return { success: false, message: I18n.t('product_login_required') };
+        }
+
+        let items = await this.getItems();
+        const existing = items.findIndex(item => item.productId === productId);
+
+        if (existing >= 0) {
+            items[existing].quantity += quantity;
+        } else {
+            items.push({
+                productId,
+                productName,
+                price: productPrice,
+                image: productImage,
+                quantity: quantity,
+                addedAt: new Date().toISOString()
+            });
+        }
+
+        await this._saveItems(items);
+        this.updateCount();
+        this.render();
+        return { success: true, message: I18n.t('cart_success') };
+    },
+
+    async removeItem(productId) {
+        let items = await this.getItems();
+        items = items.filter(item => item.productId !== productId);
+        await this._saveItems(items);
+        this.updateCount();
+        this.render();
+    },
+
+    async updateQuantity(productId, newQty) {
+        const qty = Math.max(1, parseInt(newQty) || 1);
+        let items = await this.getItems();
+        const item = items.find(i => i.productId === productId);
+        if (item) {
+            item.quantity = qty;
+            await this._saveItems(items);
+            this.updateCount();
+            this.render();
+        }
+    },
+
+    async clear() {
+        const userKey = this._getUserKey();
+        if (!userKey) return false;
+
+        let allCarts = Storage.get(this.KEYS.CART) || {};
+        delete allCarts[userKey];                    // очищаем только текущего пользователя
+        Storage.set(this.KEYS.CART, allCarts);
+
+        this.updateCount();
+        this.render();
+        return true;
+    },
+
+    async getTotal() {
+        const items = await this.getItems();
+        return items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    },
+
+    async getCount() {
+        const items = await this.getItems();
+        return items.reduce((count, item) => count + item.quantity, 0);
+    },
+
+    async updateCount() {
+        const count = await this.getCount();
+        const badge = document.getElementById('cartCount');
+        if (badge) {
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+    },
+
+    // ==================== ГЛАВНЫЙ РЕНДЕР ====================
+    async render() {
+        const container = document.getElementById('cartItems');
+        const emptyEl = document.getElementById('cartEmpty');
+        const fullEl = document.getElementById('cartFull');
+
+        if (!container) return;
+
+        const items = await this.getItems();
+
+        if (items.length === 0) {
+            if (emptyEl) emptyEl.style.display = 'block';
+            if (fullEl) fullEl.style.display = 'none';
+            return;
+        }
+
+        if (emptyEl) emptyEl.style.display = 'none';
+        if (fullEl) fullEl.style.display = 'block';
+
+        let html = '';
+        items.forEach(item => {
+            const total = item.price * item.quantity;
+            const productUrl = `product-${item.productId}.html`;
+
+            html += `
+                <div class="cart-item">
+                    <div class="cart-item__image">
+                        <a href="${productUrl}">
+                            <img src="${item.image}" alt="${item.productName}">
+                        </a>
+                    </div>
+                    <div class="cart-item__info">
+                        <h3 class="cart-item__title">
+                            <a href="${productUrl}" style="color: inherit; text-decoration: none;">
+                                ${item.productName}
+                            </a>
+                        </h3>
+                        <p class="cart-item__price">${item.price} BYN</p>
+                    </div>
+
+                    <div class="cart-item__quantity">
+                        <button class="qty-btn" onclick="Cart.updateQuantity('${item.productId}', ${item.quantity - 1})">–</button>
+                        <input type="number" class="qty-input" value="${item.quantity}" min="1" 
+                               onchange="Cart.updateQuantity('${item.productId}', this.value)">
+                        <button class="qty-btn" onclick="Cart.updateQuantity('${item.productId}', ${item.quantity + 1})">+</button>
+                    </div>
+
+                    <div class="cart-item__subtotal">
+                        <strong>${total} BYN</strong>
+                    </div>
+
+                    <button class="cart-item__remove" onclick="Cart.removeItem('${item.productId}')">✕</button>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+        const subtotal = await this.getTotal();
+        const subtotalEl = document.getElementById('summarySubtotal');
+        const totalEl = document.getElementById('summaryTotal');
+        if (subtotalEl) subtotalEl.textContent = `${subtotal} BYN`;
+        if (totalEl) totalEl.textContent = `${subtotal} BYN`;
+    },
+
+    init() {
+        this.updateCount();
+        if (document.getElementById('cartItems')) {
+            this.render();
+        }
+    }
+};
+
+// Глобальная совместимость
+window.addToCart = async function(productId, productName, productPrice, productImage) {
+    const result = await Cart.addItem(productId, productName, productPrice, productImage);
+    showNotification?.(result.message, result.success ? 'success' : 'error');
+};
+
+// Автоинициализация
+document.addEventListener('DOMContentLoaded', () => {
+    Cart.init();
+});
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = Cart;
+}

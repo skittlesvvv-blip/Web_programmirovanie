@@ -1,0 +1,484 @@
+/* ========================================
+   ЕДИНАЯ ШАПКА (одинаковая на всех страницах)
+   ======================================== */
+
+.catalog-header {
+    background-color: #ffffff;
+    padding: 20px 48px;
+    border-bottom: 1px solid #eee;
+}
+
+.catalog-header__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* Логотип по центру */
+.catalog-header__logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.catalog-header__logo a {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    color: #000000;
+    text-decoration: none;
+    letter-spacing: 4px;
+}
+
+/* Язык */
+.catalog-header__lang {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #000;
+}
+
+.lang-btn {
+    background: transparent;
+    border: none;
+    color: #000;
+    cursor: pointer;
+    font-size: 11px;
+    opacity: 0.85;
+}
+
+/* Иконки */
+.catalog-header__icons {
+    display: flex;
+    gap: 18px;
+    color: #000;
+    align-items: center;
+}
+
+/* === НАВИГАЦИЯ (точно как в "О нас") === */
+.catalog-header__nav ul {
+    display: flex;
+    justify-content: center;
+    gap: 36px;
+    list-style: none;
+    margin: 18px 0 0;
+    padding: 0;
+    border-top: 1px solid #eee;
+    padding-top: 14px;
+}
+
+.catalog-header__nav a {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #000000;
+    text-decoration: none;
+    position: relative;
+}
+
+/* Активный пункт — золотистый */
+.catalog-header__nav a.is-active {
+    color: #c9a66b;
+    font-weight: 600;
+}
+
+.catalog-header__nav a.is-active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background-color: #c9a66b;
+}
+
+/* === ХЛЕБНЫЕ КРОШКИ === */
+.breadcrumb {
+    padding: 20px 48px;
+    background-color: #ffffff;
+}
+
+.breadcrumb .container {
+    max-width: 1152px;  /* ← ИЗМЕНЕНО С 1440px НА 1152px */
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #000000;
+}
+
+.breadcrumb a {
+    color: #000000;
+    text-decoration: none;
+}
+
+/* === ГЛАВНЫЙ ПРОДУКТ === */
+.product-showcase {
+    padding: 80px 48px 80px;
+    background-color: #ffffff;
+}
+
+.product-showcase .container {
+    max-width: 1152px;  /* ← ИЗМЕНЕНО С 1440px НА 1152px */
+    margin: 0 auto;
+}
+
+.product-showcase__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    align-items: stretch;
+}
+
+.product-showcase__info-wrapper {
+    background-color: #f5f5f5;
+    padding: 50px 40px 40px 0px;
+    height: 100%;
+    min-height: 400px;
+}
+
+.product-showcase__info {
+    background-color: #ffffff;
+    padding: 96px;
+}
+
+.product-showcase--reverse .product-showcase__grid {
+    direction: rtl;
+}
+.product-showcase--reverse .product-showcase__grid > * {
+    direction: ltr;
+}
+.product-showcase--reverse .product-showcase__info-wrapper {
+    padding: 60px 100px 60px 60px;
+}
+/* === MONICA SMALL — серый блок точно по высоте картинки (не вылезает) === */
+.product-showcase:nth-of-type(3) .product-showcase__grid {
+    align-items: stretch !important;
+}
+
+/* Фиксируем высоту картинки */
+.product-showcase:nth-of-type(3) .product-showcase__img {
+    height: 480px !important;           /* ← можно менять: 500px, 520px, 540px */
+}
+
+/* Серый блок — точно такой же высоты, как картинка */
+.product-showcase:nth-of-type(3) .product-showcase__info-wrapper {
+    height: 480px !important;
+    min-height: 480px !important;
+}
+
+/* === ЦЕНТРИРОВАНИЕ ТЕКСТА В СЕРОМ БЛОКЕ MONICA SMALL === */
+.product-showcase:nth-of-type(3) .product-showcase__info {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    height: 100% !important;
+    padding: 40px 100px !important;   /* можно чуть увеличить/уменьшить */
+}
+.product-showcase__img {
+    width: 100%;
+    background-color: #f8f8f8;
+    overflow: hidden;
+}
+.product-showcase__img img {
+    width: 100%;
+    height: 100%;        /* ← Фото занимает всю высоту блока */
+    object-fit: cover;   /* ← Фото не сплющивается, а заполняет пространство */
+    display: block;
+    transition: transform 0.5s ease;
+}
+.product-showcase__img:hover img { transform: scale(1.02); }
+
+.product-showcase__title {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 8px;
+    color: #000000;
+    margin-bottom: 30px;
+    line-height: 1.2;
+}
+.product-showcase__title span {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    letter-spacing: 4px;
+    opacity: 0.6;
+}
+.product-showcase__text {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #4a4a4a;
+    max-width: 400px;
+}
+
+/* === СЕТКА ТОВАРОВ === */
+.products-grid {
+    padding: 0 48px 60px;
+    background-color: #ffffff;
+}
+
+.products-grid .container {
+    max-width: 1152px;  /* ← ИЗМЕНЕНО С 1440px НА 1152px */
+    margin: 0 auto;
+}
+
+.products-grid__row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.products-grid__row--five {
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+}
+
+.products-grid__item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.4s ease;
+}
+.products-grid__item:hover img { transform: scale(1.05); }
+
+.products-grid__item:nth-child(1) { margin-top: -90px; }
+.products-grid__row .products-grid__item:nth-child(2) { margin-top: 50px; }
+
+/* === МОНИКА СМАЛЛ — ФОТО СТРОГО СЛЕВА === */
+.product-showcase:nth-of-type(3) .product-showcase__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    direction: ltr !important;
+}
+.product-showcase:nth-of-type(3) .product-showcase__img {
+    grid-column: 1;
+    direction: ltr !important;
+}
+.product-showcase:nth-of-type(3) .product-showcase__info-wrapper {
+    grid-column: 2;
+    direction: ltr !important;
+    padding: 40px 40px 40px 0px !important;
+}
+
+.products-grid__row--five .products-grid__item:nth-child(3) { margin-top: -90px; }
+.products-grid__row--five .products-grid__item:nth-child(4) { margin-top: -90px; }
+/* ====================== КАРТОЧКИ КАТАЛОГА ====================== */
+.catalog-card {
+    overflow: hidden;           /* важно! */
+}
+
+.catalog-card img {
+    width: 100%;
+    height: 280px;              /* фиксированная высота как у остальных */
+    object-fit: cover;          /* обрезает лишнее, сохраняя пропорции */
+    object-position: center;    /* центрирует изображение */
+    transition: transform 0.3s ease;
+}
+
+.catalog-card:hover img {
+    transform: scale(1.05);
+}
+/* === GRETA BLOCK === */
+.greta-block { margin-top: 0.5px; }
+.greta-block .product-showcase__info { padding: 68px !important; }
+
+/* === ПОЛОСКА-РАЗДЕЛИТЕЛЬ === */
+.section-divider {
+    width: 100%;
+    background-color: #000;
+    
+    margin: 0.5px 0;
+    display: block;
+    border: none;
+    box-shadow: none;
+}
+
+.greta-line { display: none !important; }
+
+/* === КНОПКА ЧАТА (КАТАЛОГ) === */
+.chat-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 56px;
+    height: 56px;
+    background-color: #333333;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.chat-btn:hover { transform: scale(1.1); background-color: #000000; }
+.chat-btn svg circle { fill: #ffffff; }
+/* ========================================
+   ФИЛЬТРЫ КАТЕГОРИЙ + ПОИСК
+   ======================================== */
+
+.category-filters {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 35px 0 30px;
+    padding: 0 20px;
+}
+
+.filter-btn {
+    padding: 12px 32px;
+    border: 2px solid #e5e5e5;
+    background: #ffffff;
+    color: #333;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.filter-btn:hover {
+    border-color: #c9a66b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(201, 166, 107, 0.15);
+}
+
+.filter-btn.active {
+    background: #c9a66b;
+    color: white;
+    border-color: #c9a66b;
+}
+
+/* ========================================
+   ПОИСК
+   ======================================== */
+
+.search-bar {
+    padding: 30px 48px 20px;
+    background: #ffffff;
+    border-bottom: 1px solid #eee;
+}
+
+.search-container {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.search-container i {
+    position: absolute;
+    left: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #c9a66b;
+    font-size: 20px;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 18px 55px;
+    border: 2px solid #eee;
+    border-radius: 50px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#searchInput:focus {
+    border-color: #c9a66b;
+    box-shadow: 0 0 0 4px rgba(201, 166, 107, 0.15);
+}
+
+.clear-btn {
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+}
+/* ====================== ВЫРАВНИВАНИЕ GRETA MEDIUM (showcase-блок) ====================== */
+
+.product-showcase__grid {
+    align-items: stretch !important;
+}
+
+/* Фиксируем высоту картинки во всех showcase-блоках */
+.product-showcase__img {
+    height: 500px !important;        /* ← можно поменять на 500px или 550px, если нужно */
+    overflow: hidden;
+}
+
+.product-showcase__img img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+/* Специально для GRETA MEDIUM */
+.greta-block .product-showcase__img {
+    height: 460px !important;
+}
+
+.greta-block .product-showcase__img img {
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+/* Убираем лишние отступы у GRETA */
+.greta-block {
+    margin-top: 0 !important;
+}
+/* Адаптив */
+@media (max-width: 768px) {
+    .search-bar { padding: 25px 24px 15px; }
+    .category-filters { padding: 20px 24px 35px; gap: 8px; }
+    .filter-btn { padding: 10px 24px; font-size: 12px; }
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    .category-filters {
+        gap: 8px;
+        margin: 25px 0 35px;
+    }
+    .filter-btn {
+        padding: 10px 24px;
+        font-size: 12px;
+    }
+}
+/* === АДАПТИВНОСТЬ КАТАЛОГА === */
+@media (max-width: 1024px) {
+    .catalog-header { padding: 20px 24px; }
+    .product-showcase__grid { grid-template-columns: 1fr; gap: 30px; }
+    .product-showcase__info-wrapper { padding: 30px; }
+    .product-showcase--reverse .product-showcase__grid { direction: ltr; }
+    .products-grid__row,
+    .products-grid__row--five { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .breadcrumb { padding: 15px 24px; }
+    .product-showcase { padding: 30px 24px 60px; }
+    .product-showcase__title { font-size: 24px; letter-spacing: 4px; }
+    .products-grid { padding: 0 24px 60px; }
+    .products-grid__row,
+    .products-grid__row--five { grid-template-columns: 1fr; }
+}

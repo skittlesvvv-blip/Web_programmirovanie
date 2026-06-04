@@ -1,0 +1,155 @@
+/* 
+ * reviews.js — Полная система отзывов и рейтингов (Ф-11)
+ */
+
+const Reviews = {
+    KEYS: {
+        REVIEWS: 'scala_reviews'
+    },
+
+    getAllReviews(productId) {
+        const all = Storage.get(this.KEYS.REVIEWS) || {};
+        return all[productId] || [];
+    },
+
+    saveReviews(productId, reviews) {
+        let all = Storage.get(this.KEYS.REVIEWS) || {};
+        all[productId] = reviews;
+        Storage.set(this.KEYS.REVIEWS, all);
+    },
+
+    async addReview(productId, productName, rating, text) {
+        const user = Auth?.getCurrentUser?.() || Storage.get(Storage.keys.CURRENT_USER);
+        if (!user) {
+            showNotification?.(I18n.t('product_login_required'), 'error');
+            return { success: false };
+        }
+
+        const reviews = this.getAllReviews(productId);
+
+        const newReview = {
+            id: Date.now().toString(36),
+            productId,
+            productName,
+            userName: user.name || 'Клиент',
+            rating: parseInt(rating),
+            text: text.trim(),
+            date: new Date().toISOString()
+        };
+
+        reviews.unshift(newReview);
+        this.saveReviews(productId, reviews);
+
+        showNotification?.(I18n.t('review_success'), 'success');
+        return { success: true };
+    },
+
+    getAverageRating(productId) {
+        const reviews = this.getAllReviews(productId);
+        if (reviews.length === 0) return 0;
+        const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+        return (sum / reviews.length).toFixed(1);
+    },
+    // Демо-отзывы для всех товаров (элегантные, 4–5 звёзд)
+    addDemoReviews() {
+        const demo = {
+            'black-1': [
+                { userName: "Анна Морозова", rating: 5, text: "Потрясающее качество кожи. Сумка выглядит очень дорого и прослужит долгие годы.", date: "2025-05-15" },
+                { userName: "Екатерина Смирнова", rating: 5, text: "Идеальный размер для города. Получила огромное количество комплиментов.", date: "2025-05-12" }
+            ],
+            'blue-dark': [
+                { userName: "Анастасия Волкова", rating: 5, text: "Глубокий насыщенный цвет. Сумка стала моей любимой на каждый день.", date: "2025-05-17" }
+            ],
+            'blue-orange': [
+                { userName: "Виктория Соколова", rating: 5, text: "Яркий и очень стильный дизайн. Сумка сразу привлекает внимание.", date: "2025-05-19" },
+                { userName: "София Романова", rating: 5, text: "Отличное сочетание цветов. Качество на высшем уровне.", date: "2025-05-18" }
+            ],
+            'leopard-1': [
+                { userName: "Дарья Лебедева", rating: 5, text: "Леопардовый принт выглядит очень дорого и актуально. Все спрашивают, где купила.", date: "2025-05-20" },
+                { userName: "Ольга Петрова", rating: 5, text: "Сумка просто огонь! Качество кожи и фурнитуры на высоте.", date: "2025-05-19" }
+            ],
+            'monica-big': [
+                { userName: "Екатерина Смирнова", rating: 5, text: "Большая, удобная и невероятно красивая. Идеально подходит под любой образ.", date: "2025-05-18" }
+            ],
+            'monica-small': [
+                { userName: "Анна Морозова", rating: 5, text: "Компактная и очень стильная. Идеально для повседневного использования.", date: "2025-05-17" }
+            ],
+            'snake-1': [
+                { userName: "София Романова", rating: 5, text: "Очень эффектная модель. Змеиный принт выглядит дорого и стильно.", date: "2025-05-14" }
+            ],
+            'snake-2': [
+                { userName: "Виктория Соколова", rating: 5, text: "Красивая сумка. Принт очень реалистичный, качество отличное.", date: "2025-05-13" }
+            ],
+            'snake-3': [
+                { userName: "Дарья Лебедева", rating: 4, text: "Хорошее качество. Принт интересный, но немного ярковат.", date: "2025-05-15" }
+            ],
+            'greta-medium': [
+                { userName: "Анна Морозова", rating: 5, text: "Отличная сумка! Качество на высоте.", date: "2025-05-20" }
+            ]
+        };
+
+        Object.keys(demo).forEach(id => {
+            if (this.getAllReviews(id).length === 0) {
+                this.saveReviews(id, demo[id]);
+            }
+        });
+    },
+
+    render(productId, containerId = 'reviews-list') {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const reviews = this.getAllReviews(productId);
+        const avg = this.getAverageRating(productId);
+
+        let html = `<div class="reviews-header">
+            <h3 data-i18n="reviews_title">Отзывы</h3>
+            ${avg > 0 ? `<div class="avg-rating">⭐ ${avg}</div>` : ''}
+        </div>`;
+
+        if (reviews.length === 0) {
+            html += `<p class="no-reviews" data-i18n="reviews_empty">Пока нет отзывов. Будьте первым!</p>`;
+        } else {
+            html += reviews.map(r => `
+                <div class="review-card">
+                    <div class="review-top">
+                        <span class="review-author">${r.userName}</span>
+                        <span class="review-date">${new Date(r.date).toLocaleDateString('ru-RU')}</span>
+                    </div>
+                    <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                    <p class="review-text">${r.text}</p>
+                </div>
+            `).join('');
+        }
+
+        container.innerHTML = html;
+
+        // ← Добавлено: применяем перевод i18n после рендера
+        if (typeof I18n !== 'undefined') I18n.setLanguage(I18n.currentLang);
+    }
+};
+
+// Глобальная функция
+window.submitReview = function(productId, productName) {
+    const rating = document.getElementById('reviewRating').value;
+    const text = document.getElementById('reviewText').value.trim();
+
+    if (!rating || !text) {
+        showNotification?.(I18n.t('review_form_error'), 'error');
+        return;
+    }
+
+    Reviews.addReview(productId, productName, rating, text).then(() => {
+        document.getElementById('reviewText').value = '';
+        Reviews.render(productId);
+    });
+};
+
+// Автодобавление демо-отзывов
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof Reviews !== 'undefined') {
+        Reviews.addDemoReviews();
+    }
+});
+
+if (typeof module !== 'undefined' && module.exports) module.exports = Reviews;

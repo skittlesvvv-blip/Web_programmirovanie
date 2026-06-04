@@ -1,0 +1,166 @@
+/* 
+ * loyalty.js — Полная реализация Ф-8 (Программа лояльности)
+ */
+
+const Loyalty = {
+    config: {
+        THRESHOLD: 10000,
+        POINTS_RATIO: 1
+    },
+
+    state: {
+        data: null
+    },
+
+    _getUserId() {
+        const user = Auth?.getCurrentUser?.() || Storage.get(Storage.keys.CURRENT_USER);
+        return user?.id || null;
+    },
+
+    async getData() {
+        const userId = this._getUserId();
+        if (!userId) return null;
+
+        let data = Storage.get(`loyalty_${userId}`);
+        if (!data) {
+            data = {
+                userId,
+                spent: 0,
+                rewardClaimed: false,
+                history: []
+            };
+            Storage.set(`loyalty_${userId}`, data);
+        }
+        this.state.data = data;
+        return data;
+    },
+
+    async saveData(data) {
+        const userId = this._getUserId();
+        if (!userId) return false;
+        Storage.set(`loyalty_${userId}`, data);
+        this.state.data = data;
+        return true;
+    },
+
+    async addPoints(amount, reason = 'purchase') {
+        const userId = this._getUserId();
+        if (!userId || amount <= 0) return { success: false };
+
+        let data = await this.getData();
+        data.spent = (data.spent || 0) + amount;
+
+        data.history.unshift({
+            amount,
+            reason,
+            date: new Date().toISOString()
+        });
+
+        if (data.history.length > 20) data.history = data.history.slice(0, 20);
+
+        await this.saveData(data);
+
+        const isComplete = data.spent >= this.config.THRESHOLD;
+        if (isComplete && !data.rewardClaimed) {
+            data.rewardClaimed = true;
+            await this.saveData(data);
+            showNotification?.(I18n.t('loyalty_reward_earned'), 'success');
+        }
+
+        if (document.getElementById('loyalty-progress')) {
+            this.renderProgress();
+        }
+
+        return { success: true };
+    },
+
+    async claimReward() {
+        const data = await this.getData();
+        if (!data || data.spent < this.config.THRESHOLD || data.rewardClaimed) {
+            showNotification?.(I18n.t('loyalty_reward_error'), 'error');
+            return false;
+        }
+
+        data.rewardClaimed = true;
+        await this.saveData(data);
+        showNotification?.(I18n.t('loyalty_reward_claimed'), 'success');
+        this.renderProgress();
+        return true;
+    },
+
+    async getProgress() {
+        const data = await this.getData();
+        if (!data) return { spent: 0, percentage: 0, remaining: this.config.THRESHOLD, isComplete: false };
+
+        const percentage = Math.min(100, (data.spent / this.config.THRESHOLD) * 100);
+        const remaining = Math.max(0, this.config.THRESHOLD - data.spent);
+
+        return {
+            spent: data.spent,
+            percentage,
+            remaining,
+            isComplete: data.spent >= this.config.THRESHOLD,
+            rewardClaimed: !!data.rewardClaimed
+        };
+    },
+
+    async renderProgress() {
+        const progress = await this.getProgress();
+        const bar = document.getElementById('loyalty-progress');
+        const text = document.getElementById('loyalty-text');
+        const badge = document.getElementById('loyalty-badge');
+        const claimBtn = document.getElementById('claimRewardBtn');
+
+        if (!bar) return;
+
+        bar.style.width = `${progress.percentage}%`;
+
+        if (text) {
+            text.innerHTML = `${progress.spent} / ${this.config.THRESHOLD} BYN`;
+        }
+
+        if (badge) {
+            if (progress.isComplete) {
+                badge.textContent = I18n.t('loyalty_reward_available');
+                badge.style.background = '#22c55e';
+            } else {
+                badge.textContent = I18n.t('loyalty_remaining') + ` ${progress.remaining} BYN`;
+                badge.style.background = '';
+            }
+        }
+
+        if (claimBtn) {
+            claimBtn.style.display = progress.isComplete && !progress.rewardClaimed ? 'block' : 'none';
+        }
+    },
+
+    init() {
+        if (document.getElementById('loyalty-progress')) {
+            this.renderProgress();
+        }
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === Storage.keys.CURRENT_USER && document.getElementById('loyalty-progress')) {
+                this.renderProgress();
+            }
+        });
+    }
+};
+
+// Глобальные функции
+async function addLoyaltyPoints(amount, reason) {
+    return Loyalty.addPoints(amount, reason);
+}
+
+function claimLoyaltyReward() {
+    Loyalty.claimReward();
+}
+
+// Автозапуск
+document.addEventListener('DOMContentLoaded', () => {
+    if (Auth?.isAuthenticated?.()) {
+        Loyalty.init();
+    }
+});
+
+if (typeof module !== 'undefined' && module.exports) module.exports = Loyalty;
