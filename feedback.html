@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отзывы | Healthcare</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+    
+</head>
+<body>
+    <!-- 🌍 ЛР10: Переключатели -->
+    <div class="top-settings">
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn active" data-lang="ru">RU</button>
+        <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+
+    <div class="wrapper">
+        <div class="feedback-header">
+            <a href="index.html" class="logo">HEALTCARE.</a>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" data-i18n="home">Home</a></li>
+                    <li><a href="catalog.html" data-i18n="catalog">Catalog</a></li>
+                    <li><a href="cart.html" data-i18n="cart">Cart</a></li>
+                    <li><a href="favorites.html" data-i18n="favorites">Favorites</a></li>
+                    <li><a href="reviews.html" data-i18n="reviews-title">Reviews</a></li>
+                </ul>
+            </nav>
+        </div>
+        
+        <div class="feedback-container">
+            <div class="form-container">
+                <h2 style="text-align: center; margin-bottom: 30px; font-family: 'Roboto', sans-serif; color: #1F2A4A;" data-i18n="feedback-page-title">Оставить отзыв</h2>
+                <form id="feedbackForm" novalidate>
+                    <div class="form-group">
+                        <label for="serviceSelect" data-i18n="feedback-select-service">Выберите услугу <span class="required">*</span></label>
+                        <select id="serviceSelect" required><option value="">Загрузка...</option></select>
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="feedbackText" data-i18n="feedback-text">Ваш отзыв <span class="required">*</span></label>
+                        <textarea id="feedbackText" rows="5" required minlength="10" placeholder="Минимум 10 символов..."></textarea>
+                        <div class="error-message"></div>
+                    </div>
+                    <button type="submit" id="submitFeedbackBtn" class="btn-primary" disabled data-i18n="feedback-submit">Отправить отзыв</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="feedback.js"></script>
+    <script src="translate.js"></script>
+    <script>
+        let currentLang = localStorage.getItem('lang') || 'ru';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        
+        function getTranslate(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (i18Obj[lang] && i18Obj[lang][key]) {
+                    if (el.querySelector('.required')) {
+                        const reqSpan = el.querySelector('.required').outerHTML;
+                        el.innerHTML = i18Obj[lang][key] + ' ' + reqSpan;
+                    } else {
+                        el.textContent = i18Obj[lang][key];
+                    }
+                }
+            });
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+        
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.getElementById('themeToggle').textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.getElementById('themeToggle').textContent = '🌙';
+            }
+            currentTheme = theme;
+            localStorage.setItem('theme', theme);
+        }
+        
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('lang-btn')) getTranslate(e.target.dataset.lang);
+        });
+        
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
+        
+        window.addEventListener('load', () => {
+            getTranslate(currentLang);
+            applyTheme(currentTheme);
+        });
+    
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const navList = document.querySelector('.nav-list');
+        
+        if (navList) {
+            const existingAuth = document.getElementById('userAuthBlock');
+            if (existingAuth) existingAuth.remove();
+            const existingAdmin = document.getElementById('adminLink');
+            if (existingAdmin) existingAdmin.remove();
+
+            if (currentUser) {
+                const authBlock = document.createElement('li');
+                authBlock.id = 'userAuthBlock';
+                authBlock.style.display = 'flex';
+                authBlock.style.alignItems = 'center';
+                authBlock.style.gap = '15px';
+                
+                authBlock.innerHTML = `
+                    <span style="color: #1F2A4A; font-weight: 500;">👤 ${currentUser.firstName}</span>
+                    <button id="logoutBtn" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 14px;" data-i18n="logout">Выйти</button>
+                `;
+                
+                navList.appendChild(authBlock);
+
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    localStorage.removeItem('currentUser');
+                    location.reload();
+                });
+
+                if (currentUser.role === 'admin') {
+                    const adminLink = document.createElement('li');
+                    adminLink.id = 'adminLink';
+                    adminLink.innerHTML = '<a href="admin.html" style="color: #dc3545; font-weight: bold;">⚙️ Админ</a>';
+                    navList.appendChild(adminLink);
+                }
+            } else {
+                const loginBlock = document.createElement('li');
+                loginBlock.id = 'userAuthBlock';
+                loginBlock.innerHTML = '<a href="login.html" style="color: #4b97ef; font-weight: 500;" data-i18n="login">Login</a>';
+                navList.appendChild(loginBlock);
+            }
+        }
+    </script>
+</body>
+</html>

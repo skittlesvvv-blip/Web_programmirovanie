@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина | Healthcare</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+ 
+</head>
+<body>
+    <!-- 🌍 ЛР10: Переключатели -->
+    <div class="top-settings">
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn active" data-lang="ru">RU</button>
+        <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+
+    <div class="wrapper">
+        <div class="cart-header">
+            <a href="#" class="logo">HEALTCARE.</a>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+               <ul class="nav-list">
+                    <li><a href="index.html" data-i18n="home">Home</a></li>
+                    <li><a href="catalog.html" data-i18n="catalog">Catalog</a></li>
+                    <li><a href="login.html" data-i18n="login">Login</a></li> 
+                    <li><a href="register.html" data-i18n="register">Register</a></li>
+                    <li><a href="feedback.html" data-i18n="feedback">Feedback</a></li>
+                    <li><a href="cart.html" data-i18n="cart">Cart</a></li>
+                    <li><a href="favorites.html" data-i18n="favorites">Favorites</a></li>
+                    <li><a href="reviews.html" data-i18n="reviews-title">Reviews</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="cart-container">
+            <h2 style="margin-bottom: 30px; font-family: 'Roboto', sans-serif; color: #1F2A4A;" data-i18n="cart-title">🛒 Корзина покупок</h2>
+            <div id="cartGrid" class="cart-grid">
+                <div class="loading">Загрузка корзины...</div>
+            </div>
+            <div id="cartSummary" class="cart-summary" style="display: none;">
+                <div class="cart-total"><span data-i18n="cart-total">Итого:</span> <span id="totalAmount">0</span> <span data-i18n="cart-currency">BYN</span></div>
+                <button id="checkoutBtn" class="checkout-btn" data-i18n="cart-checkout">Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="cart.js"></script>
+    <script src="translate.js"></script>
+    <script>
+        // 🌍 ЛР10: Перевод и тема
+        let currentLang = localStorage.getItem('lang') || 'ru';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        
+        function getTranslate(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (i18Obj[lang] && i18Obj[lang][key]) {
+                    el.textContent = i18Obj[lang][key];
+                }
+            });
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+        
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.getElementById('themeToggle').textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.getElementById('themeToggle').textContent = '🌙';
+            }
+            currentTheme = theme;
+            localStorage.setItem('theme', theme);
+        }
+        
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('lang-btn')) getTranslate(e.target.dataset.lang);
+        });
+        
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
+        
+        window.addEventListener('load', () => {
+            getTranslate(currentLang);
+            applyTheme(currentTheme);
+        });
+    
+        // Скрипт авторизации
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const navList = document.querySelector('.nav-list');
+        
+        if (navList) {
+            const existingAuth = document.getElementById('userAuthBlock');
+            if (existingAuth) existingAuth.remove();
+            const existingAdmin = document.getElementById('adminLink');
+            if (existingAdmin) existingAdmin.remove();
+
+            if (currentUser) {
+                const authBlock = document.createElement('li');
+                authBlock.id = 'userAuthBlock';
+                authBlock.style.display = 'flex';
+                authBlock.style.alignItems = 'center';
+                authBlock.style.gap = '15px';
+                
+                authBlock.innerHTML = `
+                    <span style="color: #1F2A4A; font-weight: 500;">👤 ${currentUser.firstName}</span>
+                    <button id="logoutBtn" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 14px;" data-i18n="logout">Выйти</button>
+                `;
+                
+                navList.appendChild(authBlock);
+
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    localStorage.removeItem('currentUser');
+                    location.reload();
+                });
+
+                if (currentUser.role === 'admin') {
+                    const adminLink = document.createElement('li');
+                    adminLink.id = 'adminLink';
+                    adminLink.innerHTML = '<a href="admin.html" style="color: #dc3545; font-weight: bold;">⚙️ Админ</a>';
+                    navList.appendChild(adminLink);
+                }
+            } else {
+                const loginBlock = document.createElement('li');
+                loginBlock.id = 'userAuthBlock';
+                loginBlock.innerHTML = '<a href="login.html" style="color: #4b97ef; font-weight: 500;" data-i18n="login">Login</a>';
+                navList.appendChild(loginBlock);
+            }
+        }
+    </script>
+</body>
+</html>

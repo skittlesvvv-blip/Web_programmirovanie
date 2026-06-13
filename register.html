@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация | Healthcare</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+  
+</head>
+<body>
+    <!-- 🌍 ЛР10: Переключатели -->
+    <div class="top-settings">
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn active" data-lang="ru">RU</button>
+        <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+
+    <div class="wrapper">
+        <div class="form-container">
+            <h2 style="text-align: center; margin-bottom: 30px; font-family: 'Roboto', sans-serif; color: #1F2A4A;" data-i18n="register-title">Регистрация</h2>
+            <form id="registerForm" novalidate>
+                
+                <div class="form-group">
+                    <label for="phone" data-i18n="register-phone">Телефон <span class="required">*</span></label>
+                    <input type="tel" id="phone" placeholder="+375XXXXXXXXX" required pattern="\+375\d{9}">
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" data-i18n="register-email">Email <span class="required">*</span></label>
+                    <input type="email" id="email" required>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="birthDate" data-i18n="register-birthdate">Дата рождения <span class="required">*</span></label>
+                    <input type="date" id="birthDate" required>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Способ задания пароля <span class="required">*</span></label>
+                    <div style="display: flex; gap: 20px; margin-top: 5px;">
+                        <label style="cursor: pointer;"><input type="radio" name="passwordChoice" value="manual" checked> Ввести самостоятельно</label>
+                        <label style="cursor: pointer;"><input type="radio" name="passwordChoice" value="auto"> Автоматически</label>
+                    </div>
+                </div>
+                
+                <div id="manualPasswordFields">
+                    <div class="form-group">
+                        <label for="password" data-i18n="register-password">Пароль <span class="required">*</span></label>
+                        <input type="password" id="password" minlength="8" maxlength="20" required>
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="repeatPassword" data-i18n="register-repeat-password">Повторите пароль <span class="required">*</span></label>
+                        <input type="password" id="repeatPassword" onpaste="return false;" required>
+                        <div class="error-message"></div>
+                    </div>
+                </div>
+
+                <div id="autoPasswordBlock" style="display: none;">
+                    <div class="form-group">
+                        <label>Сгенерированный пароль</label>
+                        <div style="display: flex; gap: 10px; align-items: center; background: #f8f9fa; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+                            <code id="autoPasswordText" style="flex: 1; font-size: 16px; font-weight: 600; color: #1F2A4A; word-break: break-all; font-family: 'Courier New', monospace;">...</code>
+                            <button type="button" id="copyPasswordBtn" style="background: #4b97ef; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 13px;">📋 Копировать</button>
+                            <button type="button" id="regenPasswordBtn" style="background: #6c757d; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 13px;">🔄 Новый</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName" data-i18n="register-lastname">Фамилия <span class="required">*</span></label>
+                    <input type="text" id="lastName" required>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="firstName" data-i18n="register-firstname">Имя <span class="required">*</span></label>
+                    <input type="text" id="firstName" required>
+                    <div class="error-message"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="middleName" data-i18n="register-middlename">Отчество</label>
+                    <input type="text" id="middleName">
+                </div>
+                
+                <div class="form-group">
+                    <label data-i18n="register-nickname">Никнейм <span class="required">*</span></label>
+                    <div id="nicknameAutoBlock">
+                        <div style="padding: 10px; background: #f8f9fa; border-radius: 5px; margin-bottom: 10px;">
+                            Ваш никнейм: <strong id="generatedNickname">Введите имя и фамилию</strong>
+                        </div>
+                        <button type="button" id="regenNicknameBtn" class="btn-outline" style="width: auto; padding: 8px 16px; font-size: 14px;">🔄 Сгенерировать другой</button>
+                    </div>
+                    <div id="nicknameManualBlock" style="display: none;">
+                        <input type="text" id="nicknameManual" placeholder="Введите свой никнейм">
+                        <div class="error-message"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="display: flex; align-items: flex-start; gap: 10px;">
+                    <input type="checkbox" id="agreement" required style="width: auto; margin-top: 4px; cursor: pointer;">
+                    <label for="agreement" style="margin: 0; font-size: 14px; cursor: pointer;">
+                        Я согласен с <a href="#" style="color: #4b97ef;">условиями использования</a> <span class="required">*</span>
+                    </label>
+                </div>
+                
+                <button type="submit" id="submitBtn" class="btn-primary" disabled data-i18n="register-submit">Зарегистрироваться</button>
+                
+                <p style="text-align: center; margin-top: 20px; font-size: 14px; color: #5A6A7F;">
+                    <span data-i18n="register-have-account">Уже есть аккаунт?</span> <a href="login.html" style="color: #4b97ef; font-weight: 500;" data-i18n="register-login-link">Войти</a>
+                </p>
+            </form>
+        </div>
+    </div>
+    
+    <script src="register.js"></script>
+    <script src="translate.js"></script>
+    <script>
+        let currentLang = localStorage.getItem('lang') || 'ru';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        
+        function getTranslate(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (i18Obj[lang] && i18Obj[lang][key]) {
+                    // Обрабатываем метки с <span class="required">
+                    if (el.querySelector('.required')) {
+                        const reqSpan = el.querySelector('.required').outerHTML;
+                        el.innerHTML = i18Obj[lang][key] + ' ' + reqSpan;
+                    } else {
+                        el.textContent = i18Obj[lang][key];
+                    }
+                }
+            });
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+        
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.getElementById('themeToggle').textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark-theme');
+                document.getElementById('themeToggle').textContent = '🌙';
+            }
+            currentTheme = theme;
+            localStorage.setItem('theme', theme);
+        }
+        
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('lang-btn')) getTranslate(e.target.dataset.lang);
+        });
+        
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
+        
+        window.addEventListener('load', () => {
+            getTranslate(currentLang);
+            applyTheme(currentTheme);
+        });
+    </script>
+</body>
+</html>

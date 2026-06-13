@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 🎨 ЛР9: Фавикон -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+    
+    <!-- 🎨 ЛР9: Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    
+    <!-- 🎨 ЛР9: Стили для интерактивных элементов -->
+    <link rel="stylesheet" href="interactive.css">
+    
+</head>
+<body>
+    <!-- 🎨 ЛР9: ПРЕЛОАДЕР -->
+    <div id="preloader"><div class="spinner"></div></div>
+
+    <div class="wrapper">
+        <!-- 🎨 ЛР9: БУРГЕР-МЕНЮ -->
+        <button class="burger" id="burgerBtn">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="burger-menu" id="burgerMenu">
+            <a href="#home" data-i18n="home">Home</a>
+            <a href="catalog.html" data-i18n="catalog">Catalog</a>
+            <a href="login.html" data-i18n="login">Login</a>
+            <a href="register.html" data-i18n="register">Register</a>
+            <a href="feedback.html" data-i18n="feedback">Feedback</a>
+            <a href="cart.html">🛒 <span data-i18n="cart">Cart</span></a>
+            <a href="favorites.html">❤️ <span data-i18n="favorites">Favorites</span></a>
+        </nav>
+        <div class="overlay" id="overlay"></div>
+
+        <!-- 🎨 ЛР9: МОДАЛЬНОЕ ОКНО -->
+        <div class="modal" id="modal">
+            <div class="modal-content">
+                <button class="close-btn">&times;</button>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+
+        <!-- 🎨 ЛР9: КОНТЕЙНЕР ДЛЯ УВЕДОМЛЕНИЙ -->
+        <div id="notifications"></div>
+
+        <!-- Верхняя часть -->
+        <div class="top-section" id="home">
+            <header class="header">
+                <div class="header-container">
+                    <a href="#" class="logo">HEALTCARE.</a>
+                    <nav class="nav">
+                        <ul class="nav-list">
+                            <li><a href="index.html" data-i18n="home">Home</a></li>
+                            <li><a href="catalog.html" data-i18n="catalog">Catalog</a></li>
+                            <li><a href="login.html" data-i18n="login">Login</a></li>
+                            <li><a href="register.html" data-i18n="register">Register</a></li>
+                            <li><a href="feedback.html" data-i18n="feedback">Feedback</a></li>
+                            <li><a href="cart.html" data-i18n="cart">Cart</a></li>
+                            <li><a href="favorites.html" data-i18n="favorites">Favorites</a></li>
+                        </ul>
+                    </nav>
+                    
+                    <!-- 🌍 ЛР10: ПЕРЕКЛЮЧАТЕЛИ ЯЗЫКА И ТЕМЫ -->
+                    <div class="settings-bar">
+                        <button class="lang-btn" data-lang="en">EN</button>
+                        <button class="lang-btn active" data-lang="ru">RU</button>
+                        <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+                    </div>
+                    
+                    <a href="register.html" class="btn-outline" id="getStartedBtn" data-i18n="get-started">Get Started</a>
+                </div>
+            </header>
+
+            <section class="hero">
+                <div class="hero-container">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            <span class="hero-title-black" data-i18n="hero-title-1">Find And Search Your</span><br>
+                            <span class="hero-title-default" data-i18n="hero-title-2">Suitable Doctor's</span>
+                        </h1>
+                        <p class="hero-description" data-i18n="hero-description">Join us and take care of yourself and your family with health services that will make you feel confident and safe in your daily life.</p>
+                        <div class="hero-search">
+                            <div class="search-field" data-i18n="find-doctor">Find your doctor</div>
+                            <div class="search-field location-field">
+                                <span data-i18n="location">New York, USA</span>
+                                <span class="dropdown-icon">▼</span>
+                            </div>
+                            <button class="search-button">🔍</button>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <img src="images/Doctor.jpg" alt="Doctor">
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <main>
+            <!-- 🎨 ЛР9: СЧЁТЧИКИ -->
+            <section class="counters">
+                <div class="counter-item">
+                    <div class="counter-num" data-target="1500">0</div>
+                    <div class="counter-label" data-i18n="counter-patients">Happy patients</div>
+                </div>
+                <div class="counter-item">
+                    <div class="counter-num" data-target="50">0</div>
+                    <div class="counter-label" data-i18n="counter-doctors">Doctors</div>
+                </div>
+                <div class="counter-item">
+                    <div class="counter-num" data-target="15">0</div>
+                    <div class="counter-label" data-i18n="counter-experience">Years of experience</div>
+                </div>
+                <div class="counter-item">
+                    <div class="counter-num" data-target="24">0</div>
+                    <div class="counter-label" data-i18n="counter-support">Hours of support</div>
+                </div>
+            </section>
+
+            <!-- 🎨 ЛР9: СЛАЙДЕР -->
+            <section style="padding: 40px; background: var(--card-bg);">
+                <h2 style="text-align: center; margin-bottom: 20px; font-family: 'Roboto', sans-serif; color: var(--text-color);" data-i18n="slider-title">📸 Our services</h2>
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img src="images/cardiology.jpg" alt="Cardiology" onerror="this.src='https://picsum.photos/800/400?random=1'"></div>
+                        <div class="swiper-slide"><img src="images/ultrasound.jpg" alt="Ultrasound" onerror="this.src='https://picsum.photos/800/400?random=2'"></div>
+                        <div class="swiper-slide"><img src="images/mri.jpg" alt="MRI" onerror="this.src='https://picsum.photos/800/400?random=3'"></div>
+                        <div class="swiper-slide"><img src="images/laser.jpg" alt="Laser" onerror="this.src='https://picsum.photos/800/400?random=4'"></div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+            </section>
+
+            <!-- БЛОК 3: 3 ПРОСТЫХ ШАГА -->
+            <section class="steps fade-in">
+                <div class="steps-container">
+                    <h2 class="section-title" data-i18n="steps-title">3 Easy Steps and Get Your Solution</h2>
+                    <div class="steps-grid">
+                        <div class="step-card">
+                            <div class="step-img"><img src="images/icon1.png" alt="Find doctor"></div>
+                            <h3 data-i18n="step1-title">Find best doctor's</h3>
+                            <p data-i18n="step1-text">Find your doctor easily with a minimum of effort. We've kept everything organised for you.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-img"><img src="images/icon2.png" alt="Get appointment"></div>
+                            <h3 data-i18n="step2-title">Get Appointment</h3>
+                            <p data-i18n="step2-text">Ask for an appointment of the doctor quickly with almost a single click. We take care of the rest.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-img"><img src="images/icon3.png" alt="Happy consultations"></div>
+                            <h3 data-i18n="step3-title">Happy Consultations</h3>
+                            <p data-i18n="step3-text">Do consultations and take the service based on your appointment. Get back to good health.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🎨 ЛР9: ПАРАЛЛАКС-ЭФФЕКТ -->
+            <section class="parallax-section" id="parallax">
+                <div class="parallax-layer parallax-bg">
+                    <div class="parallax-shape shape-1"></div>
+                    <div class="parallax-shape shape-2"></div>
+                </div>
+                <div class="parallax-layer parallax-mid">
+                    <div class="parallax-icon">🏥</div>
+                    <div class="parallax-icon">💊</div>
+                    <div class="parallax-icon">🩺</div>
+                </div>
+                <div class="parallax-layer parallax-front">
+                    <h2 data-i18n="parallax-title">Your health care is our priority</h2>
+                    <p data-i18n="parallax-text">Over 15 years of experience • 50+ specialists • 24/7 support</p>
+                </div>
+                <div class="parallax-layer parallax-reverse">
+                    <div class="reverse-shape">+</div>
+                    <div class="reverse-shape">+</div>
+                    <div class="reverse-shape">+</div>
+                </div>
+            </section>
+
+            <section class="quality fade-in">
+                <div class="quality-container">
+                    <div class="quality-left">
+                        <img src="images/doctor-card.png" alt="Dr. Khalid Abbed">
+                    </div>
+                    <div class="quality-right">
+                        <h2 class="quality-title" data-i18n="quality-title">Best quality service with our experience doctors</h2>
+                        <p class="quality-description" data-i18n="quality-description">With our top doctors, we are able to provide best medical services above average. We have highly experienced doctors, so don't worry. They are also very talented in their fields.</p>
+                        <ul class="quality-list">
+                            <li data-i18n="quality-list-1">Search your specialist & Online consultations anywhere</li>
+                            <li data-i18n="quality-list-2">Consultation our top specialists</li>
+                            <li data-i18n="quality-list-3">Doctors are available 24/7</li>
+                        </ul>
+                        <a href="#" class="btn-quality" data-i18n="quality-btn">Explore specialists →</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- БЛОК 5: НАШИ УСЛУГИ -->
+            <section class="services fade-in">
+                <div class="services-container">
+                    <h2 class="services-title" data-i18n="services-title">Our Service</h2>
+                    <p class="services-subtitle" data-i18n="services-subtitle">Our doctors have high qualified skills and are guaranteed to help you recover from your disease.</p>
+                    <div class="services-cards">
+                        <div class="service-card">
+                            <div class="service-image"><img src="images/cardiology-icon.png" alt="Cardiology"></div>
+                            <h3 class="service-name" data-i18n="service-cardiology">Cardiology</h3>
+                            <p class="service-description" data-i18n="service-cardiology-desc">Our cardiologists are skilled at the diagnosis and testing diseases of the cardiovascular system.</p>
+                        </div>
+                        <div class="service-card pulmonology-card">
+                            <div class="service-image"><img src="images/pulmonology-icon.png" alt="Pulmonology"></div>
+                            <h3 class="service-name" data-i18n="service-pulmonology">Pulmonology</h3>
+                            <p class="service-description" data-i18n="service-pulmonology-desc">Our Pulmonologist are skilled at diagnosing treating diseases of the Pulmonology system.</p>
+                            <div class="card-bottom-line"></div>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-image"><img src="images/medicine-icon.png" alt="Medicine"></div>
+                            <h3 class="service-name" data-i18n="service-medicine">Medicine</h3>
+                            <p class="service-description" data-i18n="service-medicine-desc">Our medicine doctor are skilled at diagnosing treating diseases of the latest medicine system.</p>
+                        </div>
+                    </div>
+                    <div class="services-pagination">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🎨 ЛР9: МЕДИАГАЛЕРЕЯ -->
+            <section style="padding: 40px; background: var(--card-bg);" class="fade-in">
+                <h2 style="text-align: center; font-family: 'Roboto', sans-serif; color: var(--text-color);" data-i18n="gallery-title">🏥 Our medical services</h2>
+                <p style="text-align: center; color: var(--secondary-text); margin-bottom: 20px;" data-i18n="gallery-subtitle">Click on the image to learn more</p>
+                
+                <div class="media-gallery">
+                    <div class="media-item" data-sound="261.63">
+                        <img src="images/cardiology.jpg" alt="Cardiology">
+                    </div>
+                    <div class="media-item" data-sound="293.66">
+                        <img src="images/ultrasound.jpg" alt="Ultrasound">
+                    </div>
+                    <div class="media-item" id="videoTrigger" style="position: relative; cursor: pointer;">
+                        <img src="images/video.jpg" alt="Video" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 50px;">▶</div>
+                    </div>
+                    <div class="media-item" data-sound="329.63">
+                        <img src="images/mri.jpg" alt="MRI">
+                    </div>
+                </div>
+                
+                <div class="volume-control">
+                    🔈 <input type="range" id="volumeSlider" min="0" max="100" value="30" style="width: 200px; cursor: pointer;"> 🔊
+                    <span id="volumeValue" style="margin-left: 10px; color: var(--secondary-text); font-weight: 500;">30%</span>
+                </div>
+                
+                <video id="promoVideo" controls style="display:none; margin: 20px auto; max-width: 800px; width: 90%; border-radius: 16px; background: #000;">
+                    <source src="images/video.mp4" type="video/mp4">
+                </video>
+            </section>
+
+            <!-- БЛОК 6: НАШИ ВРАЧИ -->
+            <section class="doctors fade-in">
+                <div class="doctors-container">
+                    <h2 class="doctors-title" data-i18n="doctors-title">Meet Our Certified Online Doctors</h2>
+                    <div class="doctors-underline"></div>
+                    <p class="doctors-subtitle" data-i18n="doctors-subtitle">Our online doctors have an average of 15 years experience and a 98% satisfaction rating, they really set us apart!</p>
+                    <div class="doctors-grid">
+                        <div class="doctor-card">
+                            <div class="doctor-photo"><img src="images/doctor1.jpg" alt="Dr Amanda Linda"></div>
+                            <h3 class="doctor-name" data-i18n="doctor1-name">Dr Amanda Linda</h3>
+                            <p class="doctor-specialty" data-i18n="doctor1-specialty">Dentist Specialist</p>
+                            <div class="doctor-socials">
+                                <a href="#"><img src="images/facebook-icon.png" alt="fb"></a>
+                                <a href="#"><img src="images/twitter-icon.png" alt="tw"></a>
+                                <a href="#"><img src="images/linkedin-icon.png" alt="in"></a>
+                            </div>
+                        </div>
+                        <div class="doctor-card">
+                            <div class="doctor-photo"><img src="images/doctor2.jpg" alt="Dr Alisa Rahman"></div>
+                            <h3 class="doctor-name" data-i18n="doctor2-name">Dr Alisa Rahman</h3>
+                            <p class="doctor-specialty" data-i18n="doctor2-specialty">Cardiologist Specialist</p>
+                            <div class="doctor-socials">
+                                <a href="#"><img src="images/facebook-icon.png" alt="fb"></a>
+                                <a href="#"><img src="images/twitter-icon.png" alt="tw"></a>
+                                <a href="#"><img src="images/linkedin-icon.png" alt="in"></a>
+                            </div>
+                        </div>
+                        <div class="doctor-card">
+                            <div class="doctor-photo"><img src="images/doctor3.jpg" alt="Dr Anthony Fauci"></div>
+                            <h3 class="doctor-name" data-i18n="doctor3-name">Dr Anthony Fauci</h3>
+                            <p class="doctor-specialty" data-i18n="doctor3-specialty">Neurology Specialist</p>
+                            <div class="doctor-socials">
+                                <a href="#"><img src="images/facebook-icon.png" alt="fb"></a>
+                                <a href="#"><img src="images/twitter-icon.png" alt="tw"></a>
+                                <a href="#"><img src="images/linkedin-icon.png" alt="in"></a>
+                            </div>
+                        </div>
+                        <div class="doctor-card">
+                            <div class="doctor-photo"><img src="images/doctor4.jpg" alt="Dr Khalid Abbed"></div>
+                            <h3 class="doctor-name" data-i18n="doctor4-name">Dr Khalid Abbed</h3>
+                            <p class="doctor-specialty" data-i18n="doctor4-specialty">Cancer Specialist</p>
+                            <div class="doctor-socials">
+                                <a href="#"><img src="images/facebook-icon.png" alt="fb"></a>
+                                <a href="#"><img src="images/twitter-icon.png" alt="tw"></a>
+                                <a href="#"><img src="images/linkedin-icon.png" alt="in"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="doctors-button-wrapper">
+                        <a href="#" class="btn-doctors" data-i18n="doctors-btn">Explore All Doctors</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🎨 ЛР9: МОБИЛЬНОЕ ПРИЛОЖЕНИЕ -->
+            <section class="mobile-app fade-in">
+                <div class="mobile-container">
+                    <div class="mobile-image"><img src="images/mobile-app.png" alt="Mobile app"></div>
+                    <div class="mobile-content">
+                        <h2 class="mobile-title" data-i18n="mobile-title">Mobile apps are available<br>Get HealthCare for free!</h2>
+                        <p class="mobile-description" data-i18n="mobile-description">Get on-demand access to a doctor on your phone with the free HealthCare mobile app.</p>
+                        <div class="mobile-buttons">
+                            <a href="#" class="store-btn google-play"><img src="images/google-play.png" alt="Google Play"></a>
+                            <a href="#" class="store-btn app-store"><img src="images/app-store.png" alt="App Store"></a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🎨 ЛР9: ГЕОКАРТА -->
+            <section class="map-section fade-in">
+                <h2 style="font-family: 'Roboto', sans-serif; color: var(--text-color); margin-bottom: 10px;" data-i18n="map-title">📍 How to find us</h2>
+                <p style="color: var(--secondary-text); margin-bottom: 20px;" data-i18n="map-address">Minsk, Independence Avenue, 65</p>
+                <iframe src="https://yandex.ru/map-widget/v1/?ll=27.561521%2C53.904540&z=16&pt=27.561521,53.904540,pm2rdm" 
+                        allowfullscreen 
+                        style="width: 100%; max-width: 800px; height: 400px; border: 0; border-radius: 16px;">
+                </iframe>
+            </section>
+
+            <section class="clients-section fade-in">
+                <div class="clients-container">
+                    <h2 class="clients-title" data-i18n="clients-title">Look our Clients have to say about us</h2>
+                    <div class="clients-grid">
+                        <div class="client-img"><img src="images/client1.jpg" alt="client"></div>
+                        <div class="client-img"><img src="images/client2.jpg" alt="client"></div>
+                        <div class="client-img"><img src="images/client3.jpg" alt="client"></div>
+                    </div>
+                    <div class="clients-arrows">
+                        <div class="arrow arrow-left"></div>
+                        <div class="arrow arrow-right"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-final fade-in">
+                <div class="cta-final-container">
+                    <div class="cta-final-content">
+                        <h2 class="cta-final-title" data-i18n="cta-title">It's Time Change Your Life Today</h2>
+                        <a href="#" class="cta-final-btn" data-i18n="cta-btn">Book an Appointment</a>
+                    </div>
+                    <div class="cta-final-image"><img src="images/cta-doctor.png" alt="Doctor"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-col footer-col--left">
+                    <div class="footer-logo">HEALTCARE.</div>
+                    <p class="footer-address" data-i18n="footer-address">Metairie, 3689 Bassel Street, LA, Louisiana</p>
+                    <p class="footer-contact" data-i18n="footer-contact">Contact us: 225-788-5489</p>
+                    <div class="footer-socials">
+                        <a href="#" aria-label="Social">
+                            <img src="images/icons_footer.png" alt="Social" width="176" height="32">
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-col footer-col--category">
+                    <h4 class="footer-col-title" data-i18n="footer-category">Category</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" data-i18n="home">Home</a></li>
+                        <li><a href="#" data-i18n="footer-about-link">About</a></li>
+                        <li><a href="#" data-i18n="footer-services">Services</a></li>
+                        <li><a href="#" data-i18n="footer-reviews">Reviews</a></li>
+                        <li><a href="#" data-i18n="footer-article">Article</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-col--about">
+                    <h4 class="footer-col-title" data-i18n="footer-about">About</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" data-i18n="footer-partners">Partners</a></li>
+                        <li><a href="#" data-i18n="footer-careers">Careers</a></li>
+                        <li><a href="#" data-i18n="footer-press">Press</a></li>
+                        <li><a href="#" data-i18n="footer-community">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-col--subscribe">
+                    <h4 class="footer-col-title" data-i18n="footer-subscribe">Subscribe newsletter</h4>
+                    <p class="footer-subscribe-text" data-i18n="footer-subscribe-text">Sign up for tips, new destinations, and exclusive promos.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+   
+    <script src="translate.js"></script>
+    <script src="lr10.js"></script>
+    <script src="interactive.js"></script>
+
+    <script>
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const navList = document.querySelector('.nav-list');
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        
+        if (currentUser && getStartedBtn) {
+            getStartedBtn.style.display = 'none';
+        }
+        
+        if (navList) {
+            // Удаляем старые элементы
+            ['userAuthBlock', 'adminLink', 'profileIcon'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.remove();
+            });
+
+            if (currentUser) {
+                // 🌍 ЛР10: Иконка профиля с инициалами
+                const profileIcon = document.createElement('li');
+                profileIcon.id = 'profileIcon';
+                const initials = (currentUser.firstName?.[0] || '') + (currentUser.lastName?.[0] || '');
+                profileIcon.innerHTML = `<button class="profile-icon" onclick="openProfileModal()" title="Profile">${initials.toUpperCase()}</button>`;
+                navList.appendChild(profileIcon);
+                
+                const authBlock = document.createElement('li');
+                authBlock.id = 'userAuthBlock';
+                authBlock.style.display = 'flex';
+                authBlock.style.alignItems = 'center';
+                authBlock.style.gap = '10px';
+                
+                authBlock.innerHTML = `
+                    <span style="color: var(--text-color); font-weight: 500; font-size: 14px;">👤 ${currentUser.firstName}</span>
+                    <button id="logoutBtn" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 13px;" data-i18n="logout">Logout</button>
+                `;
+                navList.appendChild(authBlock);
+
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    localStorage.removeItem('currentUser');
+                    location.reload();
+                });
+
+                if (currentUser.role === 'admin') {
+                    const adminLink = document.createElement('li');
+                    adminLink.id = 'adminLink';
+                    adminLink.innerHTML = '<a href="admin.html" style="color: #dc3545; font-weight: 600; font-size: 12px; border: 1px solid #dc3545; padding: 3px 8px; border-radius: 4px; text-decoration: none;">⚙️ Admin</a>';
+                    navList.appendChild(adminLink);
+                }
+            } else {
+                const loginBlock = document.createElement('li');
+                loginBlock.id = 'userAuthBlock';
+                loginBlock.innerHTML = '<a href="login.html" style="color: #4b97ef; font-weight: 500; font-size: 14px;" data-i18n="login">Login</a>';
+                navList.appendChild(loginBlock);
+            }
+        }
+    </script>
+</body>
+</html>

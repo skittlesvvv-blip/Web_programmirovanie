@@ -1,0 +1,19 @@
+{
+  "services": [
+    { "id": 1, "name": "Кардиологическая консультация", "description": "Приём кардиолога, ЭКГ, рекомендации.", "price": 85, "category": "Consultation", "rating": 4.8, "image": "images/cardiology.jpg" },
+    { "id": 2, "name": "УЗИ сердца", "description": "Эхокардиография с расшифровкой.", "price": 120, "category": "Diagnostics", "rating": 4.9, "image": "images/ultrasound.jpg" },
+    { "id": 3, "name": "Лечение гипертонии", "description": "Курс терапии под наблюдением врача.", "price": 450, "category": "Treatment", "rating": 4.7, "image": "images/hypertension.jpg" },
+    { "id": 4, "name": "Профилактический осмотр", "description": "Check-up организма, анализы.", "price": 180, "category": "Prevention", "rating": 4.5, "image": "images/checkup.jpg" },
+    { "id": 5, "name": "Стоматологическая консультация", "description": "Осмотр, план лечения.", "price": 50, "category": "Consultation", "rating": 4.6, "image": "images/dentist.jpg" },
+    { "id": 6, "name": "МРТ головного мозга", "description": "Современный томограф, заключение.", "price": 320, "category": "Diagnostics", "rating": 4.9, "image": "images/mri.jpg" },
+    { "id": 7, "name": "Лазерная коррекция зрения", "description": "Безболезненная процедура.", "price": 1200, "category": "Surgery", "rating": 4.9, "image": "images/laser.jpg" },
+    { "id": 8, "name": "Вакцинация", "description": "Прививки для взрослых и детей.", "price": 45, "category": "Prevention", "rating": 4.8, "image": "images/vaccination.jpg" },
+    { "id": 9, "name": "Гастроэнтерология", "description": "Приём специалиста, ФГДС.", "price": 110, "category": "Consultation", "rating": 4.7, "image": "images/gastro.jpg" },
+    { "id": 10, "name": "Анализы крови", "description": "Общий, биохимический, гормоны.", "price": 35, "category": "Diagnostics", "rating": 4.5, "image": "images/bloodtest.jpg" },
+    { "id": 11, "name": "Физиотерапия", "description": "Курс лечения магнитным полем.", "price": 60, "category": "Treatment", "rating": 4.6, "image": "images/physio.jpg" },
+    { "id": 12, "name": "Эндокринология", "description": "Консультация, УЗИ щитовидной железы.", "price": 95, "category": "Consultation", "rating": 4.8, "image": "images/endocrinology.jpg" },
+    { "id": 13, "name": "Онкологический скрининг", "description": "Раннее выявление онкологии.", "price": 280, "category": "Diagnostics", "rating": 4.9, "image": "images/screening.jpg" },
+    { "id": 14, "name": "Реабилитация после инфаркта", "description": "Комплексная программа восстановления.", "price": 650, "category": "Treatment", "rating": 4.8, "image": "images/rehab.jpg" },
+    { "id": 15, "name": "Пластическая хирургия", "description": "Консультация, подбор операции.", "price": 1500, "category": "Surgery", "rating": 5.0, "image": "images/plastic.jpg" }
+  ]
+}

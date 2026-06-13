@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "phone": "+375291234567",
+      "email": "admin@healthcare.com",
+      "password": "Admin1@2026",
+      "birthDate": "1990-05-15",
+      "firstName": "Главный",
+      "lastName": "Администратор",
+      "nickname": "AdminPro",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "phone": "+375297654321",
+      "email": "client@healthcare.com",
+      "password": "Client1@2026",
+      "birthDate": "2000-08-20",
+      "firstName": "Иван",
+      "lastName": "Петров",
+      "nickname": "IvaPet123",
+      "role": "client"
+    }
+  ]
+}
